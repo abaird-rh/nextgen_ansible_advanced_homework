@@ -1,3 +1,34 @@
 ---
 
 # tasks file for osp.servers
+# Workflow - Import image, create flavor, create security group, create keypair, create network, provision
+#- name: Dump all osp_servers 
+#  debug:
+#    msg: "{{ osp_servers }}"
+
+#- name: More var dumps 
+#  debug:
+#    msg: "Name - {{ item.value.name }}`\nimage - {{ item.value.image }}"
+#  loop: "{{ lookup('dict',osp_servers) }}"
+
+- name: Var dump 3 
+  debug:
+    msg: "Name - {{ item.0.name }}\nimage - {{ item.0.image }}\n
+Meta : - {{ lookup('dict',item.1) }}"
+  with_subelements:
+    - "{{ osp_servers }}"
+    - meta
+#{{ lookup('dict',item.1) }}
+
+- name: Create Instances Within OpenStack
+  os_server:
+    name: "{{ item.value.name }}"
+    image: "{{ item.value.image }}"
+    flavor: "{{ item.value.flavor }}"
+    cloud: openstack
+    security_groups: "{{ item.value.security_group }}"
+    key_name: "{{ item.value.key_name }}"
+    network: int_network
+    #meta: "group={{ item.value.meta.group }},deployment_name={{ item.value.meta.deployment }}"
+  loop: "{{ lookup('dict',osp_servers) }}"
+

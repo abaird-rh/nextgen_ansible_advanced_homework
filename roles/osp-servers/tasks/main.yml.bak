@@ -1,0 +1,30 @@
+---
+
+# tasks file for osp.servers
+# Workflow - Import image, create flavor, create security group, create keypair, create network, provision
+- name: Create App Server Within OpenStack
+  os_server:
+    name: "{{ osp_app_hostname }}"
+    image: rhel-guest
+    flavor: "{{ osp_app_flavor }}"
+    cloud: openstack
+    security_groups: "{{ osp_app_sg }}"
+    network: int_network
+
+- name: Create Frontend Server Within OpenStack
+    name: "{{ osp_frontend_hostname }}"
+    image: rhel-guest
+    flavor: "{{ osp_fontend_flavour }}"
+    cloud: openstack
+    security_groups: "{{ osp_fronend_sg }}"
+    network: 
+      - int_network
+        ext_network
+
+- name: Create DB Server Within OpenStack
+    name: "{{ osp_db_hostname }}"
+    image: rhel-guest
+    flavor: "{{ osp_db_flavour }}"
+    cloud: openstack
+    security_groups: "{{ osp_frontend_sg }}"
+    network: int_network
